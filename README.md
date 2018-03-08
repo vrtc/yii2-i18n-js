@@ -9,20 +9,42 @@
 composer require w3lifer/yii2-i18n-js
 ```
 
-Add this to your application configuration:
+1. Add this to your application configuration:
 
 ``` php
 <?php
 
 return [
     // ...
-    'bootstrap' => [
+    'components' => [
         // ...
         'i18nJs' => [
             'class' => 'w3lifer\yii2\I18nJs',
         ],
         // ...
     ],
+    // ...
+];
+```
+
+2. Initialize the component anywhere, for example in the configuration:
+
+``` php
+<?php
+
+return [
+    // ...
+    'components' => [
+        // ...
+        'i18nJs' => [
+            'class' => 'w3lifer\yii2\I18nJs',
+        ],
+        // ...
+    ],
+    // ...
+    'on afterRequest' => function () {
+        Yii::$app->i18nJs;
+    },
     // ...
 ];
 ```
