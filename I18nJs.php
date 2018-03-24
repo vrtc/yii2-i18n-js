@@ -109,7 +109,13 @@ class I18nJs extends BaseObject
                     ['php']
                 ) as $filename
             ) {
-                $filenames[] = $filename;
+                // https://github.com/w3lifer/yii2-i18n-js/issues/1
+                if (preg_match(
+                    '=^' . preg_quote($basePath) . '/.+?/=',
+                    $filename
+                )) {
+                    $filenames[] = $filename;
+                }
             }
         }
         return $filenames;
