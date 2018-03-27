@@ -75,7 +75,7 @@ class I18nJs extends BaseObject
             $this->saveModificationTime();
         }
         Yii::$app->view->registerJsFile(
-            '/' . $this->jsFilename . '?v=' . $this->currentModificationTime
+            '@web/' . $this->jsFilename . '?v=' . $this->currentModificationTime
         );
         $this->registerJsScript();
     }
@@ -88,10 +88,10 @@ class I18nJs extends BaseObject
                 if (is_array($translation)) {
                     $basePaths[] =
                         isset($translation['basePath'])
-                            ? Yii::getAlias($translation['basePath'])
-                            : Yii::getAlias('@app/messages');
+                            ? realpath(Yii::getAlias($translation['basePath']))
+                            : realpath(Yii::getAlias('@app/messages'));
                 } else {
-                    $basePaths[] = Yii::getAlias($translation->basePath);
+                    $basePaths[] = realpath(Yii::getAlias($translation->basePath));
                 }
             }
         }
@@ -111,7 +111,7 @@ class I18nJs extends BaseObject
             ) {
                 // https://github.com/w3lifer/yii2-i18n-js/issues/1
                 if (preg_match(
-                    '=^' . preg_quote($basePath) . '/.+?/=',
+                    '=^' . preg_quote($basePath . DIRECTORY_SEPARATOR) . '.+?' . preg_quote(DIRECTORY_SEPARATOR) . '=',
                     $filename
                 )) {
                     $filenames[] = $filename;
@@ -146,11 +146,11 @@ class I18nJs extends BaseObject
         $result = [];
         foreach ($this->basePaths as $basePath) {
             foreach ($this->filenames as $filename) {
-                $signature = str_replace($basePath . '/', '', $filename);
+                $signature = str_replace($basePath . DIRECTORY_SEPARATOR, '', $filename);
                 $signature = substr($signature, 0, -4);
-                preg_match_all('=^([-a-z]+)/(.+)=i', $signature, $matches);
+                $matches = explode(DIRECTORY_SEPARATOR, $signature, 2);
                 /** @noinspection PhpIncludeInspection */
-                $result[$matches[1][0]][$matches[2][0]] = include $filename;
+                $result[$matches[0]][$matches[1]] = include $filename;
             }
         }
         return
