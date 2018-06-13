@@ -91,7 +91,8 @@ class I18nJs extends BaseObject
                             ? realpath(Yii::getAlias($translation['basePath']))
                             : realpath(Yii::getAlias('@app/messages'));
                 } else {
-                    $basePaths[] = realpath(Yii::getAlias($translation->basePath));
+                    $basePaths[] =
+                        realpath(Yii::getAlias($translation->basePath));
                 }
             }
         }
@@ -111,7 +112,11 @@ class I18nJs extends BaseObject
             ) {
                 // https://github.com/w3lifer/yii2-i18n-js/issues/1
                 if (preg_match(
-                    '=^' . preg_quote($basePath . DIRECTORY_SEPARATOR) . '.+?' . preg_quote(DIRECTORY_SEPARATOR) . '=',
+                    '=^' .
+                        preg_quote($basePath . DIRECTORY_SEPARATOR) .
+                        '.+?' .
+                        preg_quote(DIRECTORY_SEPARATOR) .
+                    '=',
                     $filename
                 )) {
                     $filenames[] = $filename;
@@ -119,6 +124,17 @@ class I18nJs extends BaseObject
             }
         }
         return $filenames;
+    }
+
+    private function getSavedModificationTime()
+    {
+        $modificationTime = 0;
+        if (file_exists($this->filenameForSavingModificationTime)) {
+            $modificationTime =
+                (int)
+                file_get_contents($this->filenameForSavingModificationTime);
+        }
+        return $modificationTime;
     }
 
     private function getCurrentModificationTime()
@@ -130,27 +146,28 @@ class I18nJs extends BaseObject
         return $commonModificationTime;
     }
 
-    private function getSavedModificationTime()
-    {
-        $modificationTime = 0;
-        if (file_exists($this->filenameForSavingModificationTime)) {
-            $modificationTime =
-                (int)
-                    file_get_contents($this->filenameForSavingModificationTime);
-        }
-        return $modificationTime;
-    }
-
     private function saveJsFile()
     {
         $result = [];
         foreach ($this->basePaths as $basePath) {
             foreach ($this->filenames as $filename) {
-                $signature = str_replace($basePath . DIRECTORY_SEPARATOR, '', $filename);
-                $signature = substr($signature, 0, -4);
-                $matches = explode(DIRECTORY_SEPARATOR, $signature, 2);
+                $languageAndCategoryAsString =
+                    str_replace($basePath . DIRECTORY_SEPARATOR, '', $filename);
+                // Delete file extension (.php)
+                $languageAndCategoryAsString =
+                    substr($languageAndCategoryAsString, 0, -4);
+
+                $languageAndCategoryAsArray =
+                    explode(
+                        DIRECTORY_SEPARATOR,
+                        $languageAndCategoryAsString,
+                        2
+                    );
                 /** @noinspection PhpIncludeInspection */
-                $result[$matches[0]][$matches[1]] = include $filename;
+                $result
+                    [$languageAndCategoryAsArray[0]] // Language
+                        [$languageAndCategoryAsArray[1]] = // Category
+                            include $filename;
             }
         }
         return
