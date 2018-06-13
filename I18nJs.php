@@ -132,7 +132,7 @@ class I18nJs extends BaseObject
         if (file_exists($this->filenameForSavingModificationTime)) {
             $modificationTime =
                 (int)
-                file_get_contents($this->filenameForSavingModificationTime);
+                    file_get_contents($this->filenameForSavingModificationTime);
         }
         return $modificationTime;
     }
