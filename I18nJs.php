@@ -62,7 +62,7 @@ class I18nJs extends BaseObject
         }
         $this->filenameForSavingModificationTime =
             Yii::getAlias('@runtime') . '/i18n-js-modification-time';
-        $this->basePaths = $this->getBasePaths();
+        $this->basePaths = self::getBasePaths();
         $this->filenames = $this->getFilenames();
         $this->savedModificationTime = $this->getSavedModificationTime();
         $this->currentModificationTime = $this->getCurrentModificationTime();
@@ -80,7 +80,7 @@ class I18nJs extends BaseObject
         $this->registerJsScript();
     }
 
-    private function getBasePaths()
+    public static function getBasePaths()
     {
         $basePaths = [];
         foreach (Yii::$app->i18n->translations as $category => $translation) {
