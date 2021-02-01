@@ -8,6 +8,7 @@
   "type": "yii2-extension",
   "license": "MIT",
   "require": {
+    "php": "^7",
     "yiisoft/yii2": "^2",
     "w3lifer/php-helper": "^4"
   },
