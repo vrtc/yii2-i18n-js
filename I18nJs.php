@@ -96,6 +96,10 @@ class I18nJs extends BaseObject
                 }
             }
         }
+        $func = function($value): mixed {
+            return !is_bool($value);
+        };
+        $basePaths = array_filter($basePaths, $func);
         return array_unique($basePaths);
     }
 
