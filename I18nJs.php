@@ -1,6 +1,6 @@
 <?php
 
-namespace w3lifer\yii2;
+namespace vrtc\yii2;
 
 use w3lifer\phpHelper\PhpHelper;
 use Yii;
